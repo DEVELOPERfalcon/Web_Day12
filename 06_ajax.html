@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>AJAX</title>
+
+        <!-- jQuery 추가 -->
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+        <script>
+            function clickGet(){
+                // 서버와 데이터를 주고받는 객체 생성(Android의 HttpUrlConnection과 같은 객체)
+                var req = new XMLHttpRequest();
+
+                // 저 아래 send()메소드에 의해 서버와 연결되고 echo된 결과를
+                // 돌려받았을 떄 콜백이벤트 처리 (반드시 open 전에 작성하자. 안그러면 응답을 받는 타이밍이 않맞을수도 있다)
+                req.onreadystatechange = function(){    // 서버로부터의 통신상태에 대한 결과를 받는 콜백함수
+                    $('#ta').append(req.readyState+", "+req.status+"\n");
+                    if(req.readyState==4 && req.status==200){   //200: 에러없이 잘될떄
+                        // readyState값의 종료
+                        // 1 (서버에서 요청내역을 로딩하고 있다는 응답)
+                        // 2 (서버에서 요청내역 로딩을 완료되었다는 응답)
+                        // 3 (서버에서 작업하고 있는 중이다...라는 응답)
+                        // 4 (작업 완료되었다는 값)
+                        $('#ta').text(req.responseText);
+                    }
+
+                    // 서버에 한번 요청할 때, 에러가 없으면 서버에서 4번 응답이 온다
+                }
+
+                //req.open('GET', 'test.txt', true); //세번째 파라미터: 비동기방식 여부 설정
+                req.open('GET', 'getTest.php?name=sam&pw=1234', true);
+                req.send(); //요청시작
+
+                
+            }
+            function clickPOST(){
+                var req = new XMLHttpRequest();
+                req.onreadystatechange = function(){
+                    if(req.readyState==4 && req.status==200){
+                        $('#ta').text(req.responseText);
+                    }
+                };
+
+                req.open('POST', 'postTest.php', true);
+                
+                // post로 Data를 보낼 때는, 보낸다는 헤더작업이 필요함
+                req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+                req.send('name=robin&pw=5678'); //post로 보낼 데이터를 send()의 파라미터로 전달
+            }
+
+            // 데이터의 양이 적으면 비동기를 false로 하고, onreadystatechange를 안써도 된다(비권장)
+            // function clickPOST(){
+            //     var req = new XMLHttpRequest();
+            //     req.open('POST', 'postTest.php', false);
+            //     req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            //     req.send('name=robin&pw=5678');
+            //     $('#ta').text(req.responseText);
+            // }
+        </script>
+    </head>
+    <body>
+        <h3>회원가입 페이지</h3>
+        <p>
+            <button onclick="clickGet()">GET</button>
+            <button onclick="clickPOST()">POST</button>
+        </p>
+        <hr>
+        <textarea id="ta" cols="30" rows="5"></textarea>
+    </body>
+</html>

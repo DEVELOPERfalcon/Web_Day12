@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>JQuery Library</title>
+
+        <!-- JQuery Library 추가 -->
+        <!-- 1. 파일 다운로드 방식(www.jquery.com에서 다운) -->
+        <!-- 네트워크는 필요 없지만 최신버전이 나오면 다시 다운받아야 함 - 하이브리드에서 사용 -->
+        
+        <!-- 1) www.jquery.com에 접속
+             2) [download jQuery v3.4.1] 버튼 클릭
+             3) jQuery 문단에서 빨간글씨로 되어 있는
+                    Download the compressed.production jQuery 3.4.1 - 압축버전(배포)
+                    Download the uncompressed. developmentjQuery 3.4.1 - 비압축버전(커스터마이즈 하기 좋음)
+                    Download the map file for jQuery 3.4.1 - 빠른버전
+                중에 압축버전 다운(마우스 우클릭 -> 다른이름으로 링크 저장 -> 저장)
+             4) 다운받은 파일을 현재폴더(Day12폴더)로 옮김 
+             5) script의 src에 다운받은 파일 사용 -->
+        <!-- npm이나 Yarn을 사용한 jQuery다운은 하이브리드 때 함  -->
+        <script src="./jquery-3.4.1.min.js"></script>
+
+
+        <!-- 2. CDN(Content Delivery Network) 방식 -->
+        <!-- 최신버전이 항상 적용되지만 네트워크가 필수 - Web에서 사용 -->
+
+        <!-- 1) www.jquery.com에 접속
+             2) [download jQuery v3.4.1] 버튼 클릭
+             3) Using jQuery with a CDN 문단에서 빨간글씨로 되어 있는
+                https://code.jquery.com 을 마우스 우클릭-> 새탭에서 링크 열기
+             4) 새로 열린 탭의 주소를 복사해서 script의 src에 사용 -->
+        
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+        
+        <!-- 3. Google CDN: w3schools사이트에서 권장하는 방식 -->
+
+        <!-- 1) www.jquery.com에 접속
+             2) [download jQuery v3.4.1] 버튼 클릭
+             3) Other CDNs 문단에서 빨간글씨로 되어 있는
+                Google CDN 을 마우스 우클릭-> 새탭에서 링크 열기
+             4) 새로 열린 탭에서 Libraries 문단에 있는 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> 를 복사해서 사용 -->
+             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+
+
+        <script>
+        
+            // jquery: HTML요소를 찾을 때 CSS선택자를 이용해서 쉽게 선택할 수 있음
+            // 문법
+            // jQuery('css선택자' or 객체).xxx()  를 줄여서
+            // $('css선택자' or 객체).xxx()  //jQuery글씨가 길어서 $로 약식 표현
+
+            // body요소가 load되었을 때 이벤트 처리
+            $(document).ready(function(){   //body에 onload속성 사용한것과 동일
+                // alert('aaa');
+
+                jQuery('#btn').click(function(){    //id가 btn인 녀석을 찾아 click시 함수 호출
+                    alert('clicked');
+                    $(this).hide(); //버튼이 안보이게 됨
+                });
+
+                // js의 addEventListener()와 같은 역할
+                // 1. bind()
+                $('#btn1').bind('click', function(){
+                    $('#p1').hide();
+                });
+
+                // 2. click()
+                $('#btn2').click(function(){
+                    $('#p1').show();
+                });
+
+                // 3. on(): 권장
+                $('#btn3').on('click', function(){
+                    //$('#p1').toggle();    //id선택자 사용
+                    //$('p').toggle();    //타입선택자 사용(여러개가 있을경우 동시에 모두 적용)
+                    // 여러개의 <p>중에서 첫번째꺼만 toggle()하기
+                    //$('p')[0].toggle(); //error: [0]때문에 jquery가 아니므로
+                    //$(('p')[0]).toggle();   //$()로 [0]까지 감싸서 해결
+
+                    // 참고
+                    // jquery변수를 일반 js변수에 대입하면 일반변수도 jquery변수처럼 사용가능
+                    var a = $('p');
+                    //a.toggle();
+
+                    // 일반변수와 구별이 잘 안가서 일부러 일반변수명에 $를 추가시킴
+                    var $e = $('p');
+                    $e.toggle();
+                });
+
+            });
+        
+        </script>
+
+        <!-- 마우스이벤트 연습을 위한 스타일 -->
+        <style>
+            div.m{
+                width: 200px;
+                height: 80px;
+                background-color: yellow;
+            }
+            div.m2{
+                width: 300px;
+                height: 400px;
+                background-color: lightgreen;
+            }
+        </style>
+        <script>
+            $(document).ready(function(){
+                $('.m').mouseover(function(){    //클래스 선택자 사용
+                    $('div.m p:first').text('mouse over');
+                });
+                var cnt = 0;
+                $('.m').on('mouseleave', function(){
+                    cnt++;
+                    $('div.m p:last').text(cnt);
+                });
+
+                // 여러개의 이벤트를 객체로 만들어서 한번에 처리하기
+                var callbacks = {
+                    mousedown:function(){
+                        $(this).html('down: '+event.buttons+'<br>');     //this: div.m2
+                        // 마우스 좌클릭:1, 마우스 우클릭:2, 휠클릭:4
+                        $(this).append('client or page: '+event.clientX+', '+event.clientY+'<br>');
+                        $(this).append('screen: '+event.screenX+', '+event.screenY+'<br>');
+                        $(this).append('offset: '+event.offsetX+', '+event.offsetY+'<br>');
+                    },
+                    mousemove:function(){
+                        $(this).html('move: '+event.buttons+'<br>');     //this: div.m2
+                        $(this).append('client or page: '+event.clientX+', '+event.clientY+'<br>');
+                        $(this).append('screen: '+event.screenX+', '+event.screenY+'<br>');
+                        $(this).append('offset: '+event.offsetX+', '+event.offsetY+'<br>');
+                    },
+                    mouseup:function(){
+                        $(this).html('up: '+event.buttons+'<br>');     //this: div.m2
+                        $(this).append('client or page: '+event.clientX+', '+event.clientY+'<br>');
+                        $(this).append('screen: '+event.screenX+', '+event.screenY+'<br>');
+                        $(this).append('offset: '+event.offsetX+', '+event.offsetY+'<br>');
+                    },
+                    mousewheel:function(){
+                        $(this).append(event.wheelDelta+"<br>");    //휠을 올리면 양수, 내리면 음수(어떤 조건인지는 모르지만 값이 다를수 있다)
+                    }
+                };
+                
+                $('div.m2').on(callbacks);
+
+                // 한번에 처리하는 또다른 방식( 이 방식을 더 많이 사용 )
+                $('div.m2').on("mousedown mousemove mouseup", function(){
+                    $(this).append(event.type+'<br>');     //this: div.m2
+                });
+
+                // on메소드는 간소화만을 목적으로 하지 않음
+                // 브라우저 호환성을 목적으로도 권장함
+                // mousewheel은 firefox브라우저에서는 인식안됨 (firefox는 DOMMouseScroll를 휠이벤트로 사용)
+                $('div.m2').on('mousewheel DOMMouseScroll', function(e){    //e: 마우스 이벤트
+                    if(e.detail) $(this).append("변화: "+e.detail+"<br>");
+                    else $(this).append("변화: "+e.wheelDelta+"<br>");
+                });
+            });
+        </script>
+
+        <!-- 포커스 이벤트 처리 -->
+        <script>
+            $(document).ready(function(){
+                // input요소의 포커스 이벤트
+                $('input').focus(function(){
+                    $(this).css('background-color', 'yellow');
+                });
+
+                $('input').on('blur', function(){
+                    $(this).css('background-color', '');
+                });
+            });
+        </script>
+
+    </head>
+    <body>
+        <button id="btn">button</button>
+
+        <hr>
+        <h3>클릭이벤트 처리하는 3가지 방법</h3>
+        <button id="btn1">hide</button>
+        <button id="btn2">show</button>
+        <button id="btn3">toggle</button>
+        <p id="p1">이 요소를 제어합니다.</p>
+
+        <hr>
+        <h3>마우스 이벤트</h3>
+        <div class = "m">
+            <p></p>     <!-- 마우스 over 정보 (마우스 갔다댔을 때) -->
+            <p></p>     <!-- 마우스 leave 정보 (갔다댄 마우스 치웠을 때) -->
+        </div>
+        <!-- 멀티이벤트 처리 -->
+        <div class="m2"></div>
+
+        <hr>
+        <h3>포커스 이벤트 처리</h3>
+        <label>name: <input type="text" name=""></label>
+
+    </body>
+</html>
